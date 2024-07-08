@@ -3,6 +3,8 @@ maxX = 10
 maxY = 10
 maxZ = 10
 numWalls = 500
+def getMax():
+    return maxX, maxY, maxZ
 def board():
     b = [[[0 for k in range(maxX)] for j in range(maxY)] for i in range(maxZ)]
     for i in range(numWalls):
@@ -54,61 +56,6 @@ def board():
                 elif b[z][y][x] == 2:
                     b[z][y][x] = 0
                     
-                
+    for item in b[0]:
+        print(item)
     return b
-b = board()
-n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
-while b[n[0]][n[1]][n[2]] != 0:
-    n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
-b[n[0]][n[1]][n[2]] = 5
-x,y,z = n[2],n[1],n[0]
-while True:
-    options = []
-    if x-1 >= 0 and b[z][y][x-1] !=8:
-        options.append("Left")
-    if x+1 < maxX and b[z][y][x+1] !=8:
-        options.append("Right")
-    if y-1 >= 0 and b[z][y-1][x] !=8:
-        options.append("Up")
-    if y+1 < maxY and b[z][y+1][x] !=8:
-        options.append("Down")
-    if z- 1 >=0 and b[z-1][y][x] != 8:
-        options.append("Descend")
-    if z+1 <maxZ and b[z+1][y][x] != 8:
-        options.append("Ascend")
-    print(z,options)
-    for row in b[z]:
-        print(row)
-    user = input()
-    if user.lower() == "left":
-        if x-1 >= 0 and b[z][y][x-1] !=8:
-            b[z][y][x] = 2
-            x-=1
-            b[z][y][x] = 5
-    elif user.lower() == "right":
-        if x+1 < maxX and b[z][y][x+1] !=8:
-            b[z][y][x] = 2
-            x+=1
-            b[z][y][x] = 5
-    elif user.lower() == "up":
-        if y-1 >= 0 and b[z][y-1][x] !=8:
-            b[z][y][x] = 2
-            y-=1
-            b[z][y][x] = 5
-    elif user.lower() == "down":
-        if y+1 < maxY and b[z][y+1][x] !=8:
-            b[z][y][x] = 2
-            y+=1
-            b[z][y][x] = 5
-    elif user.lower() == "ascend":
-        if z+1 < maxZ and b[z+1][y][x] !=8:
-            b[z][y][x] = 2
-            z+=1
-            b[z][y][x] = 5
-    elif user.lower() == "descend":
-        if z-1 > 0 and b[z-1][y][x] !=8:
-            b[z][y][x] = 2
-            z-=1
-            b[z][y][x] = 5
-    elif user.lower() == "exit":
-        exit()
