@@ -103,7 +103,7 @@ class GridDisplay(tk.Tk):
         self.floorDown_button.pack(side="left", padx=(10, 5))  # Floor down button
 
     # Function that displays the grid
-    # Called by init, end, reset, floorUp/floorDown, and all the move_character functions
+    # Called by init, reset, floorUp/floorDown, and ascend/descend
     def draw_grid(self):
         # Set grid to the current floor
         grid = self.b[self.z]
