@@ -30,6 +30,20 @@ class GridDisplay(tk.Tk):
         self.steps = 0
         self.progress = 0
         self.path = []
+        self.create_grid()
+        self.create_layout()
+        # Create list to allow squares to be updated without fully reloading each time
+        self.rectangles = {}
+        self.create_buttons()
+        self.draw_grid()
+
+        
+    # Multi-Threading barely one thread runs display other handles algorithm
+    def threading(self):
+            t1=Thread(target=self.start) 
+            t1.start()
+
+    def create_grid(self):
         self.b = board()
         self.maxScore = self.b[1]
         self.b = self.b[0]
@@ -39,16 +53,6 @@ class GridDisplay(tk.Tk):
             n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
         self.b[n[0]][n[1]][n[2]] = 5
         self.x,self.y,self.z = n[2],n[1],n[0]
-        self.create_layout()
-        # Create list to allow squares to be updated without fully reloading each time
-        self.rectangles = {}
-        self.draw_grid()
-        self.create_buttons()
-        
-    # Multi-Threading barely one thread runs display other handles algorithm
-    def threading(self):
-            t1=Thread(target=self.start) 
-            t1.start()
 
     def create_layout(self):
         # Create layout for display
@@ -80,6 +84,8 @@ class GridDisplay(tk.Tk):
         self.start_frame.pack(side="top", pady=(10, 0))  # Top line container
         self.start_button = tk.Button(self.start_frame, text="Start", command=self.threading, width=10, height=3)
         self.start_button.pack(side="left", padx=(10, 5))  # Start button
+        self.step_button = tk.Button(self.start_frame, text="Step", command=self.step, width=10, height=3)
+        self.step_button.pack(side="left", padx=(10, 5))  # Step button
 
     def draw_grid(self):
         grid = self.b[self.z]
@@ -148,74 +154,37 @@ class GridDisplay(tk.Tk):
             self.draw_grid()
 
     def start(self):
+        self.start_frame.pack_forget()
         while True:
-            time.sleep(.05)
-            print("trying")
-            if self.y-1 >= 0 and self.b[self.z][self.y-1][self.x] ==0:
-                self.score+=1
-                self.path.append("down")
-                self.move_character_up()
-            elif self.y+1 < maxY and self.b[self.z][self.y+1][self.x] ==0:
-                self.score+=1
-                self.path.append("up")
-                self.move_character_down()
-            elif self.x+1 < maxX and self.b[self.z][self.y][self.x+1] ==0:
-                self.score+=1
-                self.path.append("left")
-                self.move_character_right()
-            elif self.x-1 >= 0 and self.b[self.z][self.y][self.x-1] ==0:
-                self.score+=1
-                self.path.append("right")
-                self.move_character_left()
-            elif self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] ==0:
-                self.score+=1
-                self.path.append("descend")
-                self.move_character_ascend()
-            elif self.z-1 >= 0 and self.b[self.z-1][self.y][self.x] ==0:
-                self.score+=1
-                self.path.append("ascend")
-                self.move_character_descend()
-            elif len(self.path) > 0:
-                move = self.path.pop()
-                if move == "up":
-                    self.move_character_up()
-                elif move == "down":
-                    self.move_character_down()
-                elif move == "left":
-                    self.move_character_left()
-                elif move == "right":
-                    self.move_character_right()
-                elif move == "ascend":
-                    self.move_character_ascend()
-                else:
-                    self.move_character_descend()
-            else:
+            self.step()
+            if len(self.path) == 0:
                 break
-            self.score_label.config(text=f"Score: {self.score}")
-            self.steps +=1
-            self.steps_label.config(text=f"Steps: {self.steps}")
-            self.progress = ((self.steps-self.score)* 100 //self.score )
-            self.progress_label.config(text=f"Progress: {self.progress}")
-            temp = self.steps * 100 // (self.maxScore * 2)
-            self.act_progress_label.config(text=f"Actual Progress: {temp}")
+        self.end()
+
     def step(self):
-        print("trying")
+        time.sleep(DELAY)
         if self.y-1 >= 0 and self.b[self.z][self.y-1][self.x] ==0:
+            self.score+=1
             self.path.append("down")
             self.move_character_up()
         elif self.y+1 < maxY and self.b[self.z][self.y+1][self.x] ==0:
+            self.score+=1
             self.path.append("up")
             self.move_character_down()
         elif self.x+1 < maxX and self.b[self.z][self.y][self.x+1] ==0:
+            self.score+=1
             self.path.append("left")
             self.move_character_right()
         elif self.x-1 >= 0 and self.b[self.z][self.y][self.x-1] ==0:
+            self.score+=1
             self.path.append("right")
             self.move_character_left()
         elif self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] ==0:
+            self.score+=1
             self.path.append("descend")
             self.move_character_ascend()
         elif self.z-1 >= 0 and self.b[self.z-1][self.y][self.x] ==0:
+            self.score+=1
             self.path.append("ascend")
             self.move_character_descend()
         elif len(self.path) > 0:
@@ -232,8 +201,45 @@ class GridDisplay(tk.Tk):
                 self.move_character_ascend()
             else:
                 self.move_character_descend()
-        else:
-            exit()
+        self.score_label.config(text=f"Score: {self.score}")
+        self.steps +=1
+        self.steps_label.config(text=f"Steps: {self.steps}")
+        self.progress = ((self.steps-self.score)* 100 //self.score )
+        self.progress_label.config(text=f"Progress: {self.progress}")
+        temp = self.steps * 100 // (self.maxScore * 2)
+        self.act_progress_label.config(text=f"Actual Progress: {temp}")
+
+
+    def end(self):
+        self.score = 0
+        self.steps = 0
+        self.draw_grid()
+        self.end_frame = tk.Frame(self)
+        self.end_frame.pack(side="top", pady=(10, 0))  # Top line container
+        self.restart_button = tk.Button(self.end_frame, text="Restart", command=self.reset, width=10, height=3)
+        self.restart_button.pack(side="left", padx=(10, 5))  # Restart button
+        self.floorUp_button = tk.Button(self.end_frame, text="Floor up", command=self.floorUp, width=10, height=3)
+        self.floorUp_button.pack(side="left", padx=(10, 5))  # Floor up button
+        self.floorDown_button = tk.Button(self.end_frame, text="Floor down", command=self.floorDown, width=10, height=3)
+        self.floorDown_button.pack(side="left", padx=(10, 5))  # Floor down button
+
+    def floorUp(self):
+        if self.z+1 < maxZ:
+            self.z+=1
+        self.draw_grid()
+
+    def floorDown(self):
+        if self.z-1 >= 0:
+            self.z-=1
+        self.draw_grid()
+
+    def reset(self):
+        self.end_frame.pack_forget()
+        self.start_frame.pack()
+        self.create_grid()
+        self.draw_grid()
+
+
 if __name__ == "__main__":
     app = GridDisplay()
     app.mainloop()

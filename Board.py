@@ -56,7 +56,7 @@ def board():
             b[z][y][x] = 2
         elif len(path) > 0:
             loc = path.pop()
-            z,y,z = loc[0], loc[1], loc[2]
+            z,y,x = loc[0], loc[1], loc[2]
         else:
             break
     # Create maxScore variable
