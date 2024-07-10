@@ -8,6 +8,10 @@
 import tkinter as tk
 from Board import *
 # Constants
+MAXX = 10
+MAXY = 10
+MAXZ = 10
+NUM_WALLS = 500
 CELL_SIZE = 60
 COLOR_EMPTY = "white"
 COLOR_WALL = "gray26"
@@ -19,11 +23,11 @@ class GridDisplay(tk.Tk):
     def __init__(self):
         super().__init__()
         # Create board
-        self.b = board()[0]
+        self.b = board(MAXX, MAXY, MAXZ, NUM_WALLS)[0]
         # Create starting point and spawn player
-        n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
+        n = [random.randint(0,MAXZ-1),random.randint(0,MAXY-1),random.randint(0,MAXX-1)]
         while self.b[n[0]][n[1]][n[2]] != 0:
-            n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
+            n = [random.randint(0,MAXZ-1),random.randint(0,MAXY-1),random.randint(0,MAXX-1)]
         self.b[n[0]][n[1]][n[2]] = 5
         # Set player location variables
         self.x,self.y,self.z = n[2],n[1],n[0]
@@ -71,11 +75,11 @@ class GridDisplay(tk.Tk):
             self.move_up_button.config(text = "Up")
         else:
             self.move_up_button.config(text = "")
-        if self.y+1 < maxY and self.b[self.z][self.y+1][self.x] !=8:
+        if self.y+1 < MAXY and self.b[self.z][self.y+1][self.x] !=8:
             self.move_down_button.config(text = "Down")
         else:
             self.move_down_button.config(text = "")
-        if self.x+1 < maxX and self.b[self.z][self.y][self.x+1] !=8:
+        if self.x+1 < MAXX and self.b[self.z][self.y][self.x+1] !=8:
             self.move_right_button.config(text = "Right")
         else:
             self.move_right_button.config(text = "")
@@ -83,7 +87,7 @@ class GridDisplay(tk.Tk):
             self.move_left_button.config(text = "Left")
         else:
             self.move_left_button.config(text = "")
-        if self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] !=8:
+        if self.z+1 < MAXZ and self.b[self.z+1][self.y][self.x] !=8:
             self.move_ascend_button.config(text="Ascend")
         else:
             self.move_ascend_button.config(text="")
@@ -141,7 +145,7 @@ class GridDisplay(tk.Tk):
             self.draw_grid()
 
     def move_character_down(self):
-        if self.y+1 < maxY and self.b[self.z][self.y+1][self.x] !=8:
+        if self.y+1 < MAXY and self.b[self.z][self.y+1][self.x] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.y+=1
             self.b[self.z][self.y][self.x] = 5
@@ -155,14 +159,14 @@ class GridDisplay(tk.Tk):
             self.draw_grid()
 
     def move_character_right(self):
-        if self.x+1 < maxX and self.b[self.z][self.y][self.x+1] !=8:
+        if self.x+1 < MAXX and self.b[self.z][self.y][self.x+1] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.x+=1
             self.b[self.z][self.y][self.x] = 5
             self.draw_grid()
 
     def move_character_ascend(self):
-        if self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] !=8:
+        if self.z+1 < MAXZ and self.b[self.z+1][self.y][self.x] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.z+=1
             self.b[self.z][self.y][self.x] = 5

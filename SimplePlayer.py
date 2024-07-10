@@ -13,6 +13,10 @@ import time
 from threading import *
 from Board import *
 # Constants
+MAXX = 10
+MAXY = 10
+MAXZ = 10
+NUM_WALLS = 500
 DELAY = 0.1
 CELL_SIZE = 60
 COLOR_EMPTY = "white"
@@ -44,15 +48,15 @@ class GridDisplay(tk.Tk):
     # Called by init and reset
     def create_grid(self):
         # Create board
-        self.b = board()
+        self.b = board(MAXX, MAXY, MAXZ, NUM_WALLS)
         # Set maxScore
         self.maxScore = self.b[1]
         # Clean variable b to not include max score
         self.b = self.b[0]
         # Chose starting point
-        n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
+        n = [random.randint(0,MAXZ-1),random.randint(0,MAXY-1),random.randint(0,MAXX-1)]
         while self.b[n[0]][n[1]][n[2]] != 0:
-            n = [random.randint(0,maxZ-1),random.randint(0,maxY-1),random.randint(0,maxX-1)]
+            n = [random.randint(0,MAXZ-1),random.randint(0,MAXY-1),random.randint(0,MAXX-1)]
         # Update board to have character at the starting point
         self.b[n[0]][n[1]][n[2]] = 5
         # Set agent location
@@ -182,14 +186,14 @@ class GridDisplay(tk.Tk):
             self.move_character_up()
         # If down is in bounds and is a empty square: 
         # Update score/steps, and move down and push up to path stack
-        elif self.y+1 < maxY and self.b[self.z][self.y+1][self.x] ==0:
+        elif self.y+1 < MAXY and self.b[self.z][self.y+1][self.x] ==0:
             self.score+=1
             self.steps +=1
             self.path.append("up")
             self.move_character_down()
         # If right is in bounds and is a empty square: 
         # Update score/steps, and move right and push left to path stack
-        elif self.x+1 < maxX and self.b[self.z][self.y][self.x+1] ==0:
+        elif self.x+1 < MAXX and self.b[self.z][self.y][self.x+1] ==0:
             self.score+=1
             self.steps +=1
             self.path.append("left")
@@ -203,7 +207,7 @@ class GridDisplay(tk.Tk):
             self.move_character_left()
         # If up is in bounds and is a empty square: 
         # Update score/steps, and move up a floor and push descend to path stack
-        elif self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] ==0:
+        elif self.z+1 < MAXZ and self.b[self.z+1][self.y][self.x] ==0:
             self.score+=1
             self.steps +=1
             self.path.append("descend")
@@ -260,7 +264,7 @@ class GridDisplay(tk.Tk):
 
     # Function for moving down
     def move_character_down(self):
-        if self.y+1 < maxY and self.b[self.z][self.y+1][self.x] !=8:
+        if self.y+1 < MAXY and self.b[self.z][self.y+1][self.x] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.canvas.itemconfig(self.rectangles[self.y][self.x], fill=COLOR_VISITED)
             self.y+=1
@@ -278,7 +282,7 @@ class GridDisplay(tk.Tk):
 
     # Function for moving right
     def move_character_right(self):
-        if self.x+1 < maxX and self.b[self.z][self.y][self.x+1] !=8:
+        if self.x+1 < MAXX and self.b[self.z][self.y][self.x+1] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.canvas.itemconfig(self.rectangles[self.y][self.x], fill=COLOR_VISITED)
             self.x+=1
@@ -287,7 +291,7 @@ class GridDisplay(tk.Tk):
             
     # Function for moving up a floor
     def move_character_ascend(self):
-        if self.z+1 < maxZ and self.b[self.z+1][self.y][self.x] !=8:
+        if self.z+1 < MAXZ and self.b[self.z+1][self.y][self.x] !=8:
             self.b[self.z][self.y][self.x] = 2
             self.z+=1
             self.b[self.z][self.y][self.x] = 5
@@ -306,7 +310,7 @@ class GridDisplay(tk.Tk):
     # Does nothing if no floor is above
     # Called by pressing the floor up button
     def floorUp(self):
-        if self.z+1 < maxZ:
+        if self.z+1 < MAXZ:
             self.z+=1
         self.draw_grid()
 

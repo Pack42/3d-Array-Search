@@ -6,13 +6,9 @@
 #           To change parameters update the variables maxX, maxY, MaxZ, or numWalls
 
 import random
-# Define parameters of board fully costumizable, but will break if num walls is too high
-maxX = 10
-maxY = 10
-maxZ = 10
-numWalls = 500
+# Parameters of board fully costumizable, but will break if num walls is too high
 # Function to create 3d-board
-def board():
+def board(maxX, maxY, maxZ, numWalls):
     # Create board with all 0's
     b = [[[0 for k in range(maxX)] for j in range(maxY)] for i in range(maxZ)]
     # Add walls randomly
@@ -60,7 +56,7 @@ def board():
         else:
             break
     # Create maxScore variable
-        maxScore = 0
+    maxScore = 0
     # Loop that switches all impossible squares to secondary type of wall, switches visited to unvisited, and updates maxScore 
     for z in range(maxZ):
         for y in range(maxY):
