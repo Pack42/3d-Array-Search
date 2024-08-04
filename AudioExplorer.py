@@ -8,12 +8,16 @@
 
 import SimplePlayer as sp
 from nava import play
+
+from KeyManager import KeyManager
+
 MAXX = 7
 MAXY = 4
 MAXZ = 10
 NUM_WALLS = 250
 ALPH = ["A", "B", "C", "D", "E", "F", "G"]
-DELAY = .25
+TYPES = ["Grand Piano", "Harp", "Time Line"]
+DELAY = .5
 class AudioExplorer(sp.GridDisplay):
     def __init__(self):
         super().__init__()
@@ -44,8 +48,11 @@ class AudioExplorer(sp.GridDisplay):
         self.start_frame.pack_forget()
         # Run step until done then kills the thread
         while True:
+            keyper = KeyManager(True, 2, 12, TYPES[self.z % len(TYPES)])
             # Plays note
-            play("Music/" + ALPH[self.x % 7] + str((self.y % 4)+2) + ".wav", async_mode=True)
+            note =keyper.key_from_position(self.x,self.y, self.z)
+            print(note)
+            play(note, async_mode=True)
             self.step()
             if self.done:
                 break
